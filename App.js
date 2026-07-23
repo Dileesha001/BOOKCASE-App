@@ -1,5 +1,7 @@
 import React from 'react';
+import { View, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -100,34 +102,48 @@ function MainApp() {
   const { isDark, theme } = useTheme();
 
   return (
-    <NavigationContainer>
-      <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor={theme.background} />
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: theme.background },
-        }}
-      >
-        <Stack.Screen name="MainTabs" component={TabNavigator} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="BookDetail" component={BookDetailScreen} />
-        <Stack.Screen name="Cart" component={CartScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={[styles.rootContainer, { backgroundColor: theme.background }]}>
+      <NavigationContainer>
+        <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor={theme.background} />
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: theme.background },
+          }}
+        >
+          <Stack.Screen name="MainTabs" component={TabNavigator} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="BookDetail" component={BookDetailScreen} />
+          <Stack.Screen name="Cart" component={CartScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
   );
 }
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <CartProvider>
-        <AuthProvider>
-          <MainApp />
-        </AuthProvider>
-      </CartProvider>
-    </ThemeProvider>
+    <SafeAreaProvider style={styles.providerContainer}>
+      <ThemeProvider>
+        <CartProvider>
+          <AuthProvider>
+            <MainApp />
+          </AuthProvider>
+        </CartProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  providerContainer: {
+    flex: 1,
+    height: Platform.OS === 'web' ? '100vh' : '100%',
+  },
+  rootContainer: {
+    flex: 1,
+  },
+});
