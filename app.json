@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "BOOKCASE App",
+    "slug": "bookcase-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./src/assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#050c08"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/logo.png",
+        "backgroundColor": "#050c08"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/logo.png"
+    }
+  }
+}
