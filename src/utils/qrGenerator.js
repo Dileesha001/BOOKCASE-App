@@ -1,49 +1,31 @@
-import QRCode from 'qrcode';
+import qrcode from 'qrcode-generator';
 
 /**
- * Generates a QR Code matrix (2D array of booleans) for a given text.
- * @param {string} value - Text or URL to encode in QR.
+ * Generates a QR Code 2D matrix of booleans for Expo Go / React Native.
+ * @param {string} value - Text or URL to encode.
  * @returns {Array<Array<boolean>>} 2D matrix of boolean cells (true = dark, false = light)
  */
 export function generateQRMatrix(value) {
   if (!value) return [];
   try {
-    const qr = QRCode.create(value, { errorCorrectionLevel: 'M' });
-    const size = qr.modules.size;
-    const data = qr.modules.data;
+    // Type 0 auto-detects version (1..40), Error Correction level 'M'
+    const qr = qrcode(0, 'M');
+    qr.addData(String(value));
+    qr.make();
+
+    const count = qr.getModuleCount();
     const matrix = [];
 
-    for (let row = 0; row < size; row++) {
-      const rowArr = [];
-      for (let col = 0; col < size; col++) {
-        rowArr.push(Boolean(data[row * size + col]));
+    for (let r = 0; r < count; r++) {
+      const row = [];
+      for (let c = 0; c < count; c++) {
+        row.push(qr.isDark(r, c));
       }
-      matrix.push(rowArr);
+      matrix.push(row);
     }
     return matrix;
   } catch (err) {
     console.error('Failed to generate QR matrix:', err);
     return [];
-  }
-}
-
-/**
- * Generates a Data URL (base64 PNG) for a given text.
- * @param {string} value 
- * @returns {Promise<string>}
- */
-export async function generateQRDataURL(value) {
-  try {
-    return await QRCode.toDataURL(value, {
-      margin: 2,
-      width: 300,
-      color: {
-        dark: '#1B4D3E', // Emerald Dark Accent
-        light: '#FFFFFF',
-      },
-    });
-  } catch (err) {
-    console.error('Failed to generate QR Data URL:', err);
-    return null;
   }
 }

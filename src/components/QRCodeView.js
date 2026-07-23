@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, ActivityIndicator, Text } from 'react-native';
-import { generateQRDataURL, generateQRMatrix } from '../utils/qrGenerator';
+import React, { useMemo } from 'react';
+import { View, StyleSheet, Image, Text } from 'react-native';
+import { generateQRMatrix } from '../utils/qrGenerator';
 
 export const QRCodeView = ({
   value,
@@ -9,42 +9,11 @@ export const QRCodeView = ({
   lightColor = '#FFFFFF',
   logoSource,
 }) => {
-  const [dataUrl, setDataUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const matrix = useMemo(() => {
+    return generateQRMatrix(value);
+  }, [value]);
 
-  useEffect(() => {
-    let isMounted = true;
-    if (!value) {
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    generateQRDataURL(value)
-      .then((url) => {
-        if (isMounted) {
-          setDataUrl(url);
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [value, darkColor, lightColor]);
-
-  if (loading) {
-    return (
-      <View style={[styles.centerContainer, { width: size, height: size }]}>
-        <ActivityIndicator size="large" color={darkColor} />
-      </View>
-    );
-  }
-
-  if (!dataUrl) {
+  if (!matrix || matrix.length === 0) {
     return (
       <View style={[styles.centerContainer, { width: size, height: size }]}>
         <Text style={{ fontSize: 12, color: '#888' }}>Unable to generate QR</Text>
@@ -52,13 +21,28 @@ export const QRCodeView = ({
     );
   }
 
+  const numCells = matrix.length;
+  const cellSize = size / numCells;
+
   return (
     <View style={[styles.qrWrapper, { width: size, height: size, backgroundColor: lightColor }]}>
-      <Image
-        source={{ uri: dataUrl }}
-        style={{ width: size - 12, height: size - 12 }}
-        resizeMode="contain"
-      />
+      <View style={{ width: size, height: size }}>
+        {matrix.map((row, rIdx) => (
+          <View key={`r-${rIdx}`} style={{ flexDirection: 'row', height: cellSize }}>
+            {row.map((cell, cIdx) => (
+              <View
+                key={`c-${rIdx}-${cIdx}`}
+                style={{
+                  width: cellSize,
+                  height: cellSize,
+                  backgroundColor: cell ? darkColor : lightColor,
+                }}
+              />
+            ))}
+          </View>
+        ))}
+      </View>
+
       {logoSource && (
         <View style={styles.logoOverlay}>
           <Image source={logoSource} style={styles.logoImage} resizeMode="contain" />
@@ -73,8 +57,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    padding: 6,
+    padding: 8,
     position: 'relative',
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
