@@ -1,7 +1,7 @@
 {
   "name": "bookcase-app",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,13 +9,15 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/metro-config": "^57.0.7",
     "@expo/metro-runtime": "~3.2.3",
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.10.1",
-    "expo": "~51.0.0",
+    "expo": "~51.0.38",
+    "expo-modules-core": "~1.12.26",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
@@ -25,7 +27,8 @@
     "react-native-web": "^0.19.13"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0"
+    "@babel/core": "^7.24.0",
+    "babel-preset-expo": "^57.0.4"
   },
   "private": true
 }

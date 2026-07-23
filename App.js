@@ -1,3 +1,15 @@
+import * as ExpoModulesCore from 'expo-modules-core';
+if (ExpoModulesCore && typeof ExpoModulesCore.registerWebModule !== 'function') {
+  ExpoModulesCore.registerWebModule = function (moduleImplementation) {
+    if (typeof moduleImplementation === 'function') {
+      try { return new moduleImplementation(); } catch (e) {
+        try { return moduleImplementation(); } catch (err) { return moduleImplementation; }
+      }
+    }
+    return moduleImplementation;
+  };
+}
+
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
