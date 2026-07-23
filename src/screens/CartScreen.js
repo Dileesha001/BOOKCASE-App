@@ -13,28 +13,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
 import { getBookImage } from '../data/extractedCatalog';
+import { QRCodeModal } from '../components/QRCodeModal';
 
 export const CartScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const { cart, updateQuantity, removeFromCart, clearCart, subtotalLKR } = useCart();
+  const [orderPass, setOrderPass] = React.useState(null);
 
   const shippingFee = cart.length > 0 ? 350 : 0;
   const grandTotal = subtotalLKR + shippingFee;
 
   const handleCheckout = () => {
-    Alert.alert(
-      'Order Submitted!',
-      `Thank you for placing your order with BOOKCASE Sanctuary!\nTotal: LKR ${grandTotal.toLocaleString()}`,
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            clearCart();
-            navigation.navigate('Home');
-          },
-        },
-      ]
-    );
+    const randomOrderId = Math.floor(100000 + Math.random() * 900000);
+    const orderCode = `ORD-SANCTUARY-${randomOrderId}`;
+    setOrderPass(orderCode);
   };
 
   return (
@@ -184,6 +176,19 @@ export const CartScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       )}
+
+      <QRCodeModal
+        visible={Boolean(orderPass)}
+        onClose={() => {
+          setOrderPass(null);
+          clearCart();
+          navigation.navigate('Home');
+        }}
+        title="Order Confirmation & Pickup Pass"
+        subtitle="Show this QR code at store pickup counter or express delivery point"
+        qrValue={orderPass || 'ORD-SANCTUARY-000000'}
+        badgeText="VERIFIED ORDER PICKUP QR"
+      />
     </SafeAreaView>
   );
 };

@@ -16,12 +16,14 @@ import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
 import { getBookImage } from '../data/extractedCatalog';
 import { StockBadge } from '../components/StockBadge';
+import { QRCodeModal } from '../components/QRCodeModal';
 
 export const BookDetailScreen = ({ route, navigation }) => {
   const { book } = route.params;
   const { theme } = useTheme();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [showQR, setShowQR] = useState(false);
 
   const finalPrice = book.discountPercent > 0
     ? Math.round(book.priceLKR * (1 - book.discountPercent / 100))
@@ -57,12 +59,20 @@ export const BookDetailScreen = ({ route, navigation }) => {
         <Text style={[styles.headerTitle, { color: theme.textPrimary }]} numberOfLines={1}>
           {book.title}
         </Text>
-        <TouchableOpacity
-          style={[styles.backButton, { backgroundColor: theme.surface }]}
-          onPress={() => navigation.navigate('Cart')}
-        >
-          <Ionicons name="cart-outline" size={20} color={theme.textPrimary} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity
+            style={[styles.backButton, { backgroundColor: theme.surface }]}
+            onPress={() => setShowQR(true)}
+          >
+            <Ionicons name="qr-code-outline" size={18} color={theme.goldAccent} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.backButton, { backgroundColor: theme.surface }]}
+            onPress={() => navigation.navigate('Cart')}
+          >
+            <Ionicons name="cart-outline" size={20} color={theme.textPrimary} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -210,6 +220,17 @@ export const BookDetailScreen = ({ route, navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
+
+      <QRCodeModal
+        visible={showQR}
+        onClose={() => setShowQR(false)}
+        title="Book Digital QR Pass"
+        subtitle="Scan at self-checkout, reserve kiosk, or library counter"
+        qrValue={`BOOKCASE-ISBN-${book.id || '978-01'}`}
+        badgeText="SANCTUARY LITERARY CATALOG PASS"
+        bookTitle={book.title}
+        bookAuthor={`Author: ${book.author}`}
+      />
     </SafeAreaView>
   );
 };

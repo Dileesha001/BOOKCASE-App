@@ -13,10 +13,12 @@ import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { HeaderBar } from '../components/HeaderBar';
 import { getBookImage } from '../data/extractedCatalog';
+import { QRCodeModal } from '../components/QRCodeModal';
 
 export const ProfileScreen = ({ navigation }) => {
   const { isDark, theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  const [showMemberQR, setShowMemberQR] = React.useState(false);
 
   if (!user) {
     return (
@@ -88,12 +90,38 @@ export const ProfileScreen = ({ navigation }) => {
               👑 SANCTUARY MEMBER ({user.role ? user.role.toUpperCase() : 'CUSTOMER'})
             </Text>
           </View>
+
+          <TouchableOpacity
+            style={[styles.qrPassBtn, { backgroundColor: theme.primary }]}
+            onPress={() => setShowMemberQR(true)}
+          >
+            <Ionicons name="qr-code" size={18} color={theme.buttonText} />
+            <Text style={[styles.qrPassBtnText, { color: theme.buttonText }]}>
+              Digital Member Pass & QR
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Options */}
         <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>
           Preferences & Settings
         </Text>
+
+        <TouchableOpacity
+          style={[
+            styles.optionRow,
+            { backgroundColor: theme.cardBackground, borderColor: theme.cardBorder },
+          ]}
+          onPress={() => setShowMemberQR(true)}
+        >
+          <View style={styles.optionLeft}>
+            <Ionicons name="qr-code-outline" size={20} color={theme.goldAccent} />
+            <Text style={[styles.optionText, { color: theme.textPrimary }]}>
+              My Digital Member QR Pass
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={theme.textMuted} />
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={[
@@ -139,6 +167,15 @@ export const ProfileScreen = ({ navigation }) => {
             Sign Out of Account
           </Text>
         </TouchableOpacity>
+
+        <QRCodeModal
+          visible={showMemberQR}
+          onClose={() => setShowMemberQR(false)}
+          title={`${user.fullName || user.username}'s Member Pass`}
+          subtitle="Scan for store discounts, library loans, and access"
+          qrValue={`SANCTUARY-MEMBER-${user.id || user.username.toUpperCase()}-2026`}
+          badgeText="GOLD MEMBER DIGITAL ID"
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -234,6 +271,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.5,
+  },
+  qrPassBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 14,
+    gap: 8,
+  },
+  qrPassBtnText: {
+    fontSize: 13,
+    fontWeight: '800',
   },
   sectionTitle: {
     fontSize: 15,

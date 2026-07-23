@@ -4,10 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
 import { getBookImage } from '../data/extractedCatalog';
+import { QRCodeModal } from './QRCodeModal';
 
 export const HeaderBar = ({ navigation }) => {
   const { isDark, theme, toggleTheme } = useTheme();
   const { totalItems } = useCart();
+  const [qrVisible, setQrVisible] = React.useState(false);
 
   return (
     <View style={[styles.header, { backgroundColor: theme.headerBg, borderBottomColor: theme.cardBorder }]}>
@@ -19,11 +21,18 @@ export const HeaderBar = ({ navigation }) => {
         />
         <View style={styles.titleContainer}>
           <Text style={[styles.title, { color: theme.textPrimary }]}>BOOKCASE</Text>
-
         </View>
       </View>
 
       <View style={styles.actions}>
+        <TouchableOpacity
+          style={[styles.iconButton, { backgroundColor: theme.surface }]}
+          onPress={() => setQrVisible(true)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="qr-code-outline" size={18} color={theme.goldAccent} />
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.iconButton, { backgroundColor: theme.surface }]}
           onPress={toggleTheme}
@@ -51,6 +60,15 @@ export const HeaderBar = ({ navigation }) => {
           )}
         </TouchableOpacity>
       </View>
+
+      <QRCodeModal
+        visible={qrVisible}
+        onClose={() => setQrVisible(false)}
+        title="Sanctuary Digital Pass"
+        subtitle="Show your QR code at store entry or self-service terminal"
+        qrValue="SANCTUARY-PASS-891024"
+        badgeText="OFFICIAL MEMBER PASS"
+      />
     </View>
   );
 };
