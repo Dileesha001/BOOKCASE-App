@@ -30,7 +30,7 @@ export const CartScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Header */}
       <View style={[styles.navHeader, { backgroundColor: theme.headerBg, borderBottomColor: theme.cardBorder }]}>
         <TouchableOpacity

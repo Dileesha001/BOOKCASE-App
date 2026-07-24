@@ -47,7 +47,7 @@ export const BookDetailScreen = ({ route, navigation }) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Top Header Navigation */}
       <View style={[styles.navHeader, { backgroundColor: theme.headerBg }]}>
         <TouchableOpacity

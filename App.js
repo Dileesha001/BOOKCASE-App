@@ -1,15 +1,3 @@
-import * as ExpoModulesCore from 'expo-modules-core';
-if (ExpoModulesCore && typeof ExpoModulesCore.registerWebModule !== 'function') {
-  ExpoModulesCore.registerWebModule = function (moduleImplementation) {
-    if (typeof moduleImplementation === 'function') {
-      try { return new moduleImplementation(); } catch (e) {
-        try { return moduleImplementation(); } catch (err) { return moduleImplementation; }
-      }
-    }
-    return moduleImplementation;
-  };
-}
-
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
@@ -17,10 +5,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
 
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
-import { CartProvider, useCart } from './src/context/CartContext';
+import { CartProvider } from './src/context/CartContext';
 import { AuthProvider } from './src/context/AuthContext';
 
 import { HomeScreen } from './src/screens/HomeScreen';
@@ -30,82 +17,26 @@ import { CartScreen } from './src/screens/CartScreen';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { RegisterScreen } from './src/screens/RegisterScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
+import { CustomTabBar } from './src/components/CustomTabBar';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
-  const { theme } = useTheme();
-  const { totalItems } = useCart();
-
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      // Render our fully custom tab bar — handles its own keyboard/disappear fix
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: theme.tabBarBg,
-          borderTopColor: theme.cardBorder,
-          elevation: 8,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 6,
-        },
-        tabBarActiveTintColor: theme.tabBarActive,
-        tabBarInactiveTintColor: theme.tabBarInactive,
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '700',
-        },
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'HomeTab') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'CategoriesTab') {
-            iconName = focused ? 'library' : 'library-outline';
-          } else if (route.name === 'CartTab') {
-            iconName = focused ? 'cart' : 'cart-outline';
-          } else if (route.name === 'ProfileTab') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-
-          return <Ionicons name={iconName} size={size || 22} color={color} />;
-        },
-      })}
+        // Prevents keyboard from hiding the tab bar on Android
+        tabBarHideOnKeyboard: false,
+      }}
     >
-      <Tab.Screen
-        name="HomeTab"
-        component={HomeScreen}
-        options={{ title: 'Sanctuary' }}
-      />
-      <Tab.Screen
-        name="CategoriesTab"
-        component={CategoriesScreen}
-        options={{ title: 'Explore' }}
-      />
-      <Tab.Screen
-        name="CartTab"
-        component={CartScreen}
-        options={{
-          title: 'Cart',
-          tabBarBadge: totalItems > 0 ? totalItems : undefined,
-          tabBarBadgeStyle: {
-            backgroundColor: theme.primary,
-            color: theme.buttonText,
-            fontSize: 10,
-            fontWeight: '700',
-          },
-        }}
-      />
-      <Tab.Screen
-        name="ProfileTab"
-        component={ProfileScreen}
-        options={{ title: 'Profile' }}
-      />
+      <Tab.Screen name="HomeTab" component={HomeScreen} />
+      <Tab.Screen name="CategoriesTab" component={CategoriesScreen} />
+      <Tab.Screen name="CartTab" component={CartScreen} />
+      <Tab.Screen name="ProfileTab" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }

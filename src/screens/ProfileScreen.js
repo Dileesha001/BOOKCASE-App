@@ -22,7 +22,7 @@ export const ProfileScreen = ({ navigation }) => {
 
   if (!user) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: theme.background }]}>
         <HeaderBar navigation={navigation} />
         <View style={styles.guestContainer}>
           <Image
@@ -60,7 +60,7 @@ export const ProfileScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: theme.background }]}>
       <HeaderBar navigation={navigation} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>

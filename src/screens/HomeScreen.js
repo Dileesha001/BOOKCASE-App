@@ -56,7 +56,7 @@ export const HomeScreen = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: theme.background }]}>
       <HeaderBar navigation={navigation} />
 
       <ScrollView
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 24,
+    paddingBottom: 12,
   },
   searchSection: {
     paddingHorizontal: 16,

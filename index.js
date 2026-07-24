@@ -1,18 +1,6 @@
-import { AppRegistry, Platform } from 'react-native';
+import { registerRootComponent } from 'expo';
 import App from './App';
 
-// Register standard React Native App
-AppRegistry.registerComponent('main', () => App);
-
-// Web entry point runner
-if (Platform.OS === 'web' && typeof document !== 'undefined') {
-  const rootTag = document.getElementById('root') || document.getElementById('main');
-  if (rootTag) {
-    AppRegistry.runApplication('main', {
-      initialProps: {},
-      rootTag,
-    });
-  }
-}
-
-export default App;
+// registerRootComponent calls AppRegistry.registerComponent('main', () => App)
+// and ensures the environment is set up correctly whether in Expo Go or a native build.
+registerRootComponent(App);

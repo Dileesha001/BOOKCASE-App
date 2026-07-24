@@ -75,7 +75,7 @@ export const HeaderBar = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 45,
+    paddingTop: 10,
     paddingBottom: 12,
     paddingHorizontal: 16,
     flexDirection: 'row',
